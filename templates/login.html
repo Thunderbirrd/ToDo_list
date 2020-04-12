@@ -1,0 +1,25 @@
+{% extends "layouts/main.html" %}
+
+{% set active = "login" %}
+
+
+{% block content %}
+
+<div class="container col-3 mt-3">
+    <form class="" method="POST">
+        <div class="form-group">
+            <label for="exampleInputEmail1">{{ Locale.get("LOGIN") }}</label>
+            <input name="login" type="text" class="form-control" id="login" aria-describedby="emailHelp"
+                   placeholder="{{ Locale.get("PRINT_LOGIN") }}">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">{{ Locale.get("PASSWORD") }}</label>
+            <input name="password" type="password" class="form-control" id="password" placeholder="{{ Locale.get("PRINT_PASSWORD") }}">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">{{ Locale.get("ENTER") }}</button>
+            <a href="/register" class="btn btn-primary float-right">{{ Locale.get("REGISTRATION") }}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

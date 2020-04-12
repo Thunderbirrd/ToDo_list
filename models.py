@@ -76,6 +76,15 @@ class User(db.Model, Model):
             return 1
 
     @staticmethod
+    def get_current_user():
+        id = session.get("auth")
+        return db.session.query(User).filter(User.id == id).first()
+
+    @staticmethod
+    def is_authorised():
+        return User.get_current_user() is not None
+
+    @staticmethod
     def get_login_by_id(i):
         user = db.session.query(User).filter(User.id == i).first()
         return user.login
@@ -98,17 +107,36 @@ class Task(db.Model, Model):
     text = db.Column(db.String)
     status = db.Column(db.Boolean)  # True = active, False = archived
     author_id = db.column(db.Integer, db.ForeignKey(User.id))
-    date = db.Column(db.DateTime)
+    added_date = db.Column(db.DateTime)
+    finished_date = db.Column(db.DateTime)
 
     def __init__(self, name, author_id, status=False):
         self.name = name
         self.status = status
         self.author_id = author_id
-        self.date = datetime.now().replace(second=0, microsecond=0)
+        self.added_date = datetime.now().replace(second=0, microsecond=0)
+        if status:
+            self.finished_date = datetime.now().replace(second=0, microsecond=0)
+        else:
+            self.finished_date = None
+
+    author = db.relationship(User)
 
     def set_status(self, status):
         self.status = status
+        if status:
+            self.finished_date = datetime.now().replace(second=0, microsecond=0)
+        else:
+            self.finished_date = None
         self.save()
+
+    def validate(self):
+        super().validate()
+        if not self.text:
+            self.errors.append("Body of the story can't be empty")
+        if not self.name:
+            self.errors.append("Head of the story can't be empty")
+        return len(self.errors) == 0
 
     def set_text(self, text):
         self.text = text
@@ -120,7 +148,7 @@ class Task(db.Model, Model):
 
     @staticmethod
     def get_archive():
-        tasks = list(db.session.query(Task).filter(not Task.status))
+        tasks = list(db.session.query(Task).filter(not Task.status).all())
         archive = []
 
         for task in tasks:
@@ -130,7 +158,7 @@ class Task(db.Model, Model):
 
     @staticmethod
     def get_active_tasks():
-        tasks = list(db.session.query(Task).filter(Task.status))
+        tasks = list(db.session.query(Task).filter(Task.status).all())
         archive = []
 
         for task in tasks:
@@ -141,18 +169,23 @@ class Task(db.Model, Model):
     @staticmethod
     def get_task_by_id(i):
         task = db.session.query(Task).filter(Task.id == i).first()
+        if task.status:
+            task.finished_date = datetime.now().replace(second=0, microsecond=0)
+        else:
+            task.finished_date = None
         return {
             "name": task.name,
             "text": task.text,
             "status": task.status,
-            "date": task.date,
+            "added_date": task.added_date,
+            "finished_date": task.finished_date,
             "author_id": task.author_id,
             "author_login": User.get_login_by_id(task.author_id)
         }
 
     @staticmethod
     def get_users_tasks(user_id):
-        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).filter(Task.status))
+        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).filter(Task.status).all())
         return_list = []
         for task in tasks:
             return_list.append(Task.get_task_by_id(task.id))
@@ -161,7 +194,7 @@ class Task(db.Model, Model):
 
     @staticmethod
     def get_users_archive(user_id):
-        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).filter(not Task.status))
+        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).filter(not Task.status).all())
         return_list = []
         for task in tasks:
             return_list.append(Task.get_task_by_id(task.id))
@@ -170,9 +203,37 @@ class Task(db.Model, Model):
 
     @staticmethod
     def get_all_tasks(user_id):
-        tasks = list(db.session.query(Task).filter(Task.author_id == user_id))
+        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).all())
         return_list = []
         for task in tasks:
             return_list.append(Task.get_task_by_id(task.id))
 
         return return_list
+
+    @staticmethod
+    def get_all_task_in_period(date1, date2):
+        tasks = list(db.Session.query(Task).filter(date1 <= Task.added_date <= date2).all())
+        return_list = []
+        for task in tasks:
+            return_list.append(Task.get_task_by_id(task.id))
+
+        return return_list
+
+
+class Locale:
+
+    @staticmethod
+    def get(key):
+        locales = ["en", "ru"]
+        locale = session.get("locale", "ru")
+        if locale in locales:
+            file = 'localizations/%s.json' % locale
+            with open(file, 'r', encoding='utf8') as f:
+                strings = json.load(f)
+            return strings.get(key, key)
+        else:
+            locale = "ru"
+            file = 'localizations/%s.json' % locale
+            with open(file, 'r', encoding='utf8') as f:
+                strings = json.load(f)
+            return strings.get(key, key)

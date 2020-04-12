@@ -1,0 +1,12 @@
+<div class="alert alert-warning container text-center col-4 mt-3">
+    <h3>{% if message=="Saved" %}{{ Locale.get("SAVED") }}{% endif %}</h3>
+    <h3>{% if message=="Wrong login and/or password" %}{{ Locale.get("WRONG") }}{% endif %}</h3>
+    <h3>{% if message=="Login must be set" %}{{ Locale.get("LOGIN_SET") }}{% endif %}</h3>
+    <h3>{% if message=="Password must be set" %}{{ Locale.get("PASSWORD_SET") }}{% endif %}</h3>
+    <h3>{% if message=="Story added" %}{{ Locale.get("STORY_ADDED") }}{% endif %}</h3>
+    <h3>{% if message=="Story changed" %}{{ Locale.get("STORY_CHANGED") }}{% endif %}</h3>
+    <h3>{% if message=="Register successful" %}{{ Locale.get("REGISTER_SUCCESSFUL") }}{% endif %}</h3>
+    <h3>{% if message=="Body of the story can't be empty" %}{{ Locale.get("BODY_EMPTY") }}{% endif %}</h3>
+    <h3>{% if message=="Head of the story can't be empty" %}{{ Locale.get("HEAD_EMPTY") }}{% endif %}</h3>
+    <h3>{% if message=="Bad color" %}{{ Locale.get("BAD_COLOR") }}{% endif %}</h3>
+</div>
