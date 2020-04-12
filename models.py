@@ -42,6 +42,15 @@ class User(db.Model, Model):
         self.password = new_pass
         self.save()
 
+    def get_active_tasks(self):
+        return Task.get_users_tasks(self.id)
+
+    def get_archive(self):
+        return Task.get_users_archive(self.id)
+
+    def get_all_tasks(self):
+        return Task.get_all_tasks(self.id)
+
     @staticmethod
     def check_login(login):
         login = str(login)
@@ -61,6 +70,8 @@ class User(db.Model, Model):
             return "Password should be at least 8 symbols"
         elif password.isnumeric() or password.isalpha() or password.lower() == password or password.upper() == password:
             return "Password should consists of at least: 1 upper case letter, 1 lower case and one number"
+        elif password == "qwerty123":
+            return "Very bad password, dude)"
         else:
             return 1
 
@@ -85,15 +96,15 @@ class Task(db.Model, Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     name = db.column(db.String)
     text = db.Column(db.String)
-    status = db.Column(db.Boolean)
+    status = db.Column(db.Boolean)  # True = active, False = archived
     author_id = db.column(db.Integer, db.ForeignKey(User.id))
-    date = db.Column(db.DATETIME)
+    date = db.Column(db.DateTime)
 
-    def __init__(self, name, author_id, date, status=False):
+    def __init__(self, name, author_id, status=False):
         self.name = name
         self.status = status
         self.author_id = author_id
-        self.date = date
+        self.date = datetime.now().replace(second=0, microsecond=0)
 
     def set_status(self, status):
         self.status = status
@@ -106,6 +117,26 @@ class Task(db.Model, Model):
     def set_name(self, name):
         self.name = name
         self.save()
+
+    @staticmethod
+    def get_archive():
+        tasks = list(db.session.query(Task).filter(not Task.status))
+        archive = []
+
+        for task in tasks:
+            archive.append(Task.get_task_by_id(task.id))
+
+        return archive
+
+    @staticmethod
+    def get_active_tasks():
+        tasks = list(db.session.query(Task).filter(Task.status))
+        archive = []
+
+        for task in tasks:
+            archive.append(Task.get_task_by_id(task.id))
+
+        return archive
 
     @staticmethod
     def get_task_by_id(i):
@@ -121,11 +152,27 @@ class Task(db.Model, Model):
 
     @staticmethod
     def get_users_tasks(user_id):
-        tasks = list(db.session.query(Task).filter(Task.author_id == user_id))
+        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).filter(Task.status))
         return_list = []
         for task in tasks:
             return_list.append(Task.get_task_by_id(task.id))
 
         return return_list
 
+    @staticmethod
+    def get_users_archive(user_id):
+        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).filter(not Task.status))
+        return_list = []
+        for task in tasks:
+            return_list.append(Task.get_task_by_id(task.id))
 
+        return return_list
+
+    @staticmethod
+    def get_all_tasks(user_id):
+        tasks = list(db.session.query(Task).filter(Task.author_id == user_id))
+        return_list = []
+        for task in tasks:
+            return_list.append(Task.get_task_by_id(task.id))
+
+        return return_list
