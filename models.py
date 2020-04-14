@@ -15,10 +15,8 @@ class Model:
 
     def save(self):
         if self.validate():
-            print(self.id)
             if self.id is None:
                 db.session.add(self)
-                print(2)
             db.session.commit()
             return True
         else:
@@ -26,13 +24,14 @@ class Model:
 
 
 class User(db.Model, Model):
-    id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String, unique=True)
     password = db.Column(db.String)
 
     def __init__(self, login="", password=""):
         self.login = login
         self.password = password
+        self.save()
 
     def set_login(self, new_login):
         self.login = new_login
@@ -54,14 +53,22 @@ class User(db.Model, Model):
     @staticmethod
     def check_login(login):
         login = str(login)
-        if login in User.get_all_login():
-            return "User with this login already exists"
-        elif len(login) < 5:
-            return "Login must be at least 5 symbols"
-        elif not login[0].isalpha():
-            return "Login should starts with a letter"
+        if not User.get_all_login():
+            if len(login) < 5:
+                return "Login must be at least 5 symbols"
+            elif not login[0].isalpha():
+                return "Login should starts with a letter"
+            else:
+                return 1
         else:
-            return 1
+            if login in User.get_all_login():
+                return "User with this login already exists"
+            elif len(login) < 5:
+                return "Login must be at least 5 symbols"
+            elif not login[0].isalpha():
+                return "Login should starts with a letter"
+            else:
+                return 1
 
     @staticmethod
     def check_pass(password):
@@ -102,7 +109,7 @@ class User(db.Model, Model):
 
 
 class Task(db.Model, Model):
-    id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     text = db.Column(db.String)
     status = db.Column(db.Boolean)  # True = active, False = archived

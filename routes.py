@@ -18,25 +18,25 @@ def register():
         login = request.form.get("login")
         password = request.form.get("password")
 
-    if User.check_login(login) == 1 and User.check_pass(password) == 1:
-        user = User.auth(login, password)
+        if User.check_login(login) == 1 and User.check_pass(password) == 1:
+            user = User.auth(login, password)
 
-        if user:
-            return json.dumps({'resultCode': 1})
+            if user:
+                return json.dumps({'resultCode': 1})
 
-        user = User(login, password)
-        user.save()
+            user = User(login, password)
+            user.save()
 
-        return json.dumps(
-            {
-                'resultCode': 0,
-                'data': {
-                    'login': login,
-                    'password': password,
-                    'user_id': user.id
+            return json.dumps(
+                {
+                    'resultCode': 0,
+                    'data': {
+                        'login': login,
+                        'password': password,
+                        'user_id': user.id
+                    }
                 }
-            }
-        )
+            )
 
     return render_template('register.html')
 
