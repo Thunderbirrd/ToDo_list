@@ -1,8 +1,7 @@
 from app import app
 from flask import render_template, redirect, url_for, request, flash, session
-from database import db
 import json
-
+import re
 from models import User, Task
 
 
@@ -66,3 +65,30 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route('/add-task', methods=['POST'])
+def add_task():
+    task = Task(name=request.form.get('task'))
+    task.save()
+    return redirect(url_for('index'))
+
+
+@app.route('/check', methods=['POST'])
+def check():
+    ids = []
+
+    for row in request.form:
+        search = re.search("^task-([\d]+)$", row)
+        if search is not None:
+            ids.append(int(search.group(1)))
+
+    for task in Task.get_all():
+        task.status = task.id in ids
+        task.save()
+
+    return redirect(url_for('index'))
+
+
+@app.route('/')
+def index():
+    tasks = Task.get_all()
+    return render_template('index.html', tasks=tasks)

@@ -30,7 +30,7 @@ class User(db.Model, Model):
     login = db.Column(db.String, unique=True)
     password = db.Column(db.String)
 
-    def __init__(self, login, password=""):
+    def __init__(self, login="", password=""):
         self.login = login
         self.password = password
 
@@ -103,19 +103,19 @@ class User(db.Model, Model):
 
 class Task(db.Model, Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
-    name = db.column(db.String)
+    name = db.Column(db.String)
     text = db.Column(db.String)
     status = db.Column(db.Boolean)  # True = active, False = archived
-    author_id = db.column(db.Integer, db.ForeignKey(User.id))
+    author_id = db.Column(db.Integer, db.ForeignKey(User.id))
     added_date = db.Column(db.DateTime)
     finished_date = db.Column(db.DateTime)
 
-    def __init__(self, name, author_id, status=False):
+    def __init__(self, name=""):
         self.name = name
-        self.status = status
-        self.author_id = author_id
+        self.status = False
+        self.author_id = 0
         self.added_date = datetime.now().replace(second=0, microsecond=0)
-        if status:
+        if self.status:
             self.finished_date = datetime.now().replace(second=0, microsecond=0)
         else:
             self.finished_date = None
@@ -218,6 +218,10 @@ class Task(db.Model, Model):
             return_list.append(Task.get_task_by_id(task.id))
 
         return return_list
+
+    @staticmethod
+    def get_all():
+        return db.session.query(Task).all()
 
 
 class Locale:
