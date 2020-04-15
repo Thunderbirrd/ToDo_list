@@ -155,26 +155,6 @@ class Task(db.Model, Model):
         self.save()
 
     @staticmethod
-    def get_archive():
-        tasks = list(db.session.query(Task).filter(not Task.status).all())
-        archive = []
-
-        for task in tasks:
-            archive.append(Task.get_task_by_id(task.id))
-
-        return archive
-
-    @staticmethod
-    def get_active_tasks():
-        tasks = list(db.session.query(Task).filter(Task.status).all())
-        archive = []
-
-        for task in tasks:
-            archive.append(Task.get_task_by_id(task.id))
-
-        return archive
-
-    @staticmethod
     def get_task_by_id(i):
         task = db.session.query(Task).filter(Task.id == i).first()
         if task.status:
@@ -193,30 +173,11 @@ class Task(db.Model, Model):
 
     @staticmethod
     def get_users_tasks(user_id):
-        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).filter(Task.status).all())
-        return_list = []
-        for task in tasks:
-            return_list.append(Task.get_task_by_id(task.id))
-
-        return return_list
+        return db.session.query(Task).filter(Task.author_id == user_id).filter(Task.status == False).all()
 
     @staticmethod
     def get_users_archive(user_id):
-        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).filter(not Task.status).all())
-        return_list = []
-        for task in tasks:
-            return_list.append(Task.get_task_by_id(task.id))
-
-        return return_list
-
-    @staticmethod
-    def get_all_tasks(user_id):
-        tasks = list(db.session.query(Task).filter(Task.author_id == user_id).all())
-        return_list = []
-        for task in tasks:
-            return_list.append(Task.get_task_by_id(task.id))
-
-        return return_list
+        return db.session.query(Task).filter(Task.author_id == user_id).filter(Task.status == True).all()
 
     @staticmethod
     def get_all_task_in_period(date1, date2):
@@ -229,7 +190,7 @@ class Task(db.Model, Model):
 
     @staticmethod
     def get_all():
-        return db.session.query(Task).all()
+        return db.session.query(Task).filter(Task.status).all()
 
 
 class Locale:

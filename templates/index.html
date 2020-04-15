@@ -9,6 +9,7 @@
     <title>To-Do List</title>
 </head>
 <body>
+{% include "layouts/_navbar.html" %}
     <div class="container mt-5">
         <div class="card bg-light">
             <div class="card-body">
@@ -17,7 +18,7 @@
 
                 <form method="POST" action="/check">
                     {% for task in tasks %}
-                        <div><input id="checkbox-{{ task.id }}" type="checkbox" name="task-{{ task.id }}" {{ "checked" if task.status }}> <label for="checkbox-{{ task.id }}">{{ task.name }}</label></div>
+                        <div><input id="checkbox-{{ task.id }}" type="checkbox" name="task-{{ task.id }}" {{ "checked" if task.status }}> <label for="checkbox-{{ task.id }}">{{ task.name }}</label>: <label for="checkbox-{{ task.id }}">{{ task.text }}</label>.   Дата добавления: <label for="checkbox-{{ task.id }}">{{ task.added_date }}</label></div>
                     {% endfor %}
                     <br>
                     <button type="submit" class="btn btn-sm btn-primary">Save</button>

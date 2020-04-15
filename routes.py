@@ -78,20 +78,44 @@ def add_task():
 @app.route('/check', methods=['POST'])
 def check():
     ids = []
-
+    user = User.get_current_user()
     for row in request.form:
         search = re.search("^task-([\d]+)$", row)
         if search is not None:
             ids.append(int(search.group(1)))
 
-    for task in Task.get_all():
+    for task in Task.get_users_tasks(user.id):
         task.status = task.id in ids
         task.set_status(task.status)
 
     return redirect(url_for('index'))
 
 
+@app.route('/check_archive', methods=['POST'])
+def check_archive():
+    ids = []
+    user = User.get_current_user()
+    for row in request.form:
+        search = re.search("^task-([\d]+)$", row)
+        if search is not None:
+            ids.append(int(search.group(1)))
+
+    for task in Task.get_users_archive(user.id):
+        task.status = task.id in ids
+        task.set_status(task.status)
+
+    return redirect(url_for('archive'))
+
+
+@app.route('/archive')
+def archive():
+    user = User.get_current_user()
+    tasks = Task.get_users_archive(user.id)
+    return render_template('archive.html', tasks=tasks)
+
+
 @app.route('/')
 def index():
-    tasks = Task.get_all()
+    user = User.get_current_user()
+    tasks = Task.get_users_tasks(user.id)
     return render_template('index.html', tasks=tasks)
