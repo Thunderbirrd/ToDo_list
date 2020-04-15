@@ -67,7 +67,10 @@ def logout():
 
 @app.route('/add-task', methods=['POST'])
 def add_task():
-    task = Task(name=request.form.get('task'))
+    if not auth():
+        return redirect(url_for("login"))
+    user = User.get_current_user()
+    task = Task(name=request.form.get("name"), text=request.form.get("text"), author_id=user.id)
     task.save()
     return redirect(url_for('index'))
 
@@ -83,7 +86,7 @@ def check():
 
     for task in Task.get_all():
         task.status = task.id in ids
-        task.save()
+        task.set_status(task.status)
 
     return redirect(url_for('index'))
 

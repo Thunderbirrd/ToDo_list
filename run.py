@@ -11,6 +11,5 @@ def include_permission_class():
     return {'User': User, 'Locale': Locale}
 
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
