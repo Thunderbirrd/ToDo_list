@@ -117,10 +117,11 @@ class Task(db.Model, Model):
     added_date = db.Column(db.DateTime)
     finished_date = db.Column(db.DateTime)
 
-    def __init__(self, name=""):
+    def __init__(self, name="", text="", author_id=0):
         self.name = name
+        self.text = text
         self.status = False
-        self.author_id = 0
+        self.author_id = author_id
         self.added_date = datetime.now().replace(second=0, microsecond=0)
         if self.status:
             self.finished_date = datetime.now().replace(second=0, microsecond=0)
