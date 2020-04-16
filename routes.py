@@ -1,4 +1,5 @@
 from app import app
+from database import db
 from flask import render_template, redirect, url_for, request, flash, session
 import json
 import datetime
@@ -146,6 +147,16 @@ def all_tasks():
 def set_locale(rg):
         session["locale"] = rg
         return redirect(url_for("index"))
+
+
+@app.route('/delete_task', methods=['POST'])
+def delete_task():
+    if not auth():
+        return redirect(url_for("login"))
+    user = User.get_current_user()
+    name = request.form.get("task_to_delete")
+    Task.delete_task(user.id, name)
+    return redirect(url_for('index'))
 
 
 @app.route('/')

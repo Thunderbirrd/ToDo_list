@@ -185,11 +185,19 @@ class Task(db.Model, Model):
     @staticmethod
     def check_if_task_is_unique_today(user_id, name):
         task = db.session.query(Task).filter(Task.author_id == user_id).filter(
-            str(Task.added_date)[:10] == str(datetime.today())[:10]).filter(Task.name == name).all()
+            Task.status == False).filter(Task.name == name).all()
         if len(list(task)) == 0:
-            return False
-        else:
             return True
+        else:
+            return False
+
+    @staticmethod
+    def delete_task(user_id, name):
+        task = Task.query.filter(Task.author_id == user_id).filter(
+            Task.name == name).filter(Task.status == False).first()
+        if task is not None:
+            db.session.delete(task)
+            db.session.commit()
 
     @staticmethod
     def get_all(user_id):

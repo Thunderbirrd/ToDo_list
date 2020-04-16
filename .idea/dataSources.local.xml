@@ -106,5 +106,10 @@
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
       <introspection-schemas>*:main</introspection-schemas>
     </data-source>
+    <data-source name="database [22]" uuid="c5fbfc6c-00cd-4130-8a61-bc4bf5ea6d2e">
+      <database-info product="SQLite" version="3.20.1" jdbc-version="2.1" driver-name="SQLite JDBC" driver-version="3.20.1.1" />
+      <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
+      <introspection-schemas>*:main</introspection-schemas>
+    </data-source>
   </component>
 </project>
