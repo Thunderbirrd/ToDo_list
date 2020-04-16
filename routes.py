@@ -71,8 +71,10 @@ def add_task():
     if not auth():
         return redirect(url_for("login"))
     user = User.get_current_user()
-    task = Task(name=request.form.get("name"), text=request.form.get("text"), author_id=user.id)
-    task.save()
+    name = request.form.get("name")
+    if Task.check_if_task_is_unique_today(name):
+        task = Task(name=name, text=request.form.get("text"), author_id=user.id)
+        task.save()
     return redirect(url_for('index'))
 
 

@@ -183,6 +183,14 @@ class Task(db.Model, Model):
             Task.author_id == user_id).filter(Task.status == True).all()
 
     @staticmethod
+    def check_if_task_is_unique_today(name):
+        task = db.session.query(Task).filter(str(Task.added_date)[:10] == str(datetime.today())[:10]).filter(Task.name == name).all()
+        if len(list(task)) == 0:
+            return False
+        else:
+            return True
+
+    @staticmethod
     def get_all(user_id):
         return db.session.query(Task).filter(user_id == Task.author_id).all()
 
