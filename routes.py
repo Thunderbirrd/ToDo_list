@@ -72,7 +72,7 @@ def add_task():
         return redirect(url_for("login"))
     user = User.get_current_user()
     name = request.form.get("name")
-    if Task.check_if_task_is_unique_today(name):
+    if Task.check_if_task_is_unique_today(user.id, name):
         task = Task(name=name, text=request.form.get("text"), author_id=user.id)
         task.save()
     return redirect(url_for('index'))
