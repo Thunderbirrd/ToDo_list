@@ -14,29 +14,11 @@
         <div class="card bg-light">
             <div class="card-body">
 
-                <h2 class="card-title">To-Do List:</h2>
-
-                <form method="POST" action="/check">
+                <h2 class="card-title">{{Locale.get("ALL")}}:</h2>
                     {% for task in tasks %}
                         <div><input id="checkbox-{{ task.id }}" type="checkbox" name="task-{{ task.id }}" {{ "checked" if task.status }}> <label for="checkbox-{{ task.id }}">{{ task.name }}</label>: <label for="checkbox-{{ task.id }}">{{ task.text }}</label>. <br>  Дата добавления: <label for="checkbox-{{ task.id }}">{{ task.added_date }}</label></div>
                     {% endfor %}
-                    <br>
-                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
-                </form>
-
                 <hr>
-
-                <div>
-                    <form method="POST" action="/add-task">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="name" placeholder="Task name">
-                            <input type="text" class="form-control" name="text" placeholder="Task description">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-success" type="submit">Add a new task</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
     </div>

@@ -1,9 +1,7 @@
 from database import db
 from flask import session
 from datetime import datetime
-from sqlalchemy import func, asc, select
 import json
-import random
 
 
 class Model:
@@ -180,17 +178,13 @@ class Task(db.Model, Model):
         return db.session.query(Task).filter(Task.author_id == user_id).filter(Task.status == True).all()
 
     @staticmethod
-    def get_all_task_in_period(date1, date2):
-        tasks = list(db.Session.query(Task).filter(date1 <= Task.added_date <= date2).all())
-        return_list = []
-        for task in tasks:
-            return_list.append(Task.get_task_by_id(task.id))
-
-        return return_list
+    def get_all_users_task_in_period(user_id, date1, date2):
+        return db.session.query(Task).filter(date1 <= Task.added_date).filter(Task.added_date <= date2).filter(
+            Task.author_id == user_id).filter(Task.status == True).all()
 
     @staticmethod
-    def get_all():
-        return db.session.query(Task).filter(Task.status).all()
+    def get_all(user_id):
+        return db.session.query(Task).filter(user_id == Task.author_id).all()
 
 
 class Locale:

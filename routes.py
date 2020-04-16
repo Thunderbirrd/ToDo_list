@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template, redirect, url_for, request, flash, session
 import json
+import datetime
 import re
 from models import User, Task
 
@@ -107,15 +108,48 @@ def check_archive():
     return redirect(url_for('archive'))
 
 
+@app.route('/tasks_in_period', methods=['POST'])
+def period():
+    user = User.get_current_user()
+    s1 = request.form.get("start_date")
+    s2 = request.form.get("finish_date")
+    date1 = datetime.date(int(s1[:4]), int(s1[5:7]), int(s1[-2:]))
+    date2 = datetime.date(int(s2[:4]), int(s2[5:7]), int(s2[-2:]))
+    if date1 <= date2:
+        tasks = Task.get_all_users_task_in_period(user.id, date1, date2)
+        return render_template('archive.html', tasks=tasks)
+    else:
+        return redirect(url_for('archive'))
+
+
 @app.route('/archive')
 def archive():
+    if not auth():
+        return redirect(url_for("login"))
     user = User.get_current_user()
     tasks = Task.get_users_archive(user.id)
     return render_template('archive.html', tasks=tasks)
 
 
+@app.route('/all_tasks')
+def all_tasks():
+    if not auth():
+        return redirect(url_for("login"))
+    user = User.get_current_user()
+    tasks = Task.get_all(user.id)
+    return render_template('all_tasks.html', tasks=tasks)
+
+
+@app.route('/set_locale/<rg>')
+def set_locale(rg):
+        session["locale"] = rg
+        return redirect(url_for("index"))
+
+
 @app.route('/')
 def index():
+    if not auth():
+        return redirect(url_for("login"))
     user = User.get_current_user()
     tasks = Task.get_users_tasks(user.id)
     return render_template('index.html', tasks=tasks)

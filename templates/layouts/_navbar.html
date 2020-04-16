@@ -5,14 +5,11 @@
                 <a class="nav-link" href="/">{{ Locale.get("MAIN") }}</a>
             </li>
             {% if User.is_authorised() %}
-                <li class="nav-item {% if active == "new_room" %}active{% endif %}">
-                    <a class="nav-link" href="/new_story">{{ Locale.get("NEW_STORY") }}</a>
-                </li>
-                <li class="nav-item {% if active == "settings" %}active{% endif %}">
+                <li class="nav-item {% if active == "archive" %}active{% endif %}">
                     <a class="nav-link" href="/archive">{{ Locale.get("ARCHIVE") }}</a>
                 </li>
                 <li class="nav-item {% if active == "change_story" %}active{% endif %}">
-                    <a class="nav-link" href="/change_story">{{ Locale.get("MY_POSTS") }}</a>
+                    <a class="nav-link" href="/all_tasks">{{ Locale.get("ALL") }}</a>
                 </li>
                 <li class="nav-item {% if active == "logout" %}active{% endif %}">
                     <a class="nav-link" href="/logout">{{ Locale.get("EXIT") }}</a>

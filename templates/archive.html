@@ -14,7 +14,7 @@
         <div class="card bg-light">
             <div class="card-body">
 
-                <h2 class="card-title">Archive:</h2>
+                <h2 class="card-title">{{Locale.get("ARCHIVE")}}:</h2>
 
                 <form method="POST" action="/check_archive">
                     {% for task in tasks %}
@@ -22,11 +22,22 @@
                             <br>  Дата добавления: <label for="checkbox-{{ task.id }}">{{ task.added_date }}</label>  Дата завершения: <label for="checkbox-{{ task.id }}">{{ task.finished_date }}</label></div>
                     {% endfor %}
                     <br>
+
                     <button type="submit" class="btn btn-sm btn-primary">Save</button>
                 </form>
 
                 <hr>
+            <div>
+                <form method="POST" action="/tasks_in_period">
+                    <div><input type="date" name="start_date" placeholder="Дата начала выборки">
+                    <input type="date" name="finish_date" placeholder="Дата конца выборки"></div>
+                    <br>
+                    <div class="input-group-append">
+                        <button class="btn btn-sm btn-primary" type="submit">Get tasks in this period</button>
+                    </div>
 
+                </form>
+            </div>
             </div>
         </div>
     </div>
