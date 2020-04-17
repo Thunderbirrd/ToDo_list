@@ -3,10 +3,11 @@
     <h3>{% if message=="Wrong login and/or password" %}{{ Locale.get("WRONG") }}{% endif %}</h3>
     <h3>{% if message=="Login must be set" %}{{ Locale.get("LOGIN_SET") }}{% endif %}</h3>
     <h3>{% if message=="Password must be set" %}{{ Locale.get("PASSWORD_SET") }}{% endif %}</h3>
-    <h3>{% if message=="Story added" %}{{ Locale.get("STORY_ADDED") }}{% endif %}</h3>
-    <h3>{% if message=="Story changed" %}{{ Locale.get("STORY_CHANGED") }}{% endif %}</h3>
     <h3>{% if message=="Register successful" %}{{ Locale.get("REGISTER_SUCCESSFUL") }}{% endif %}</h3>
-    <h3>{% if message=="Body of the story can't be empty" %}{{ Locale.get("BODY_EMPTY") }}{% endif %}</h3>
-    <h3>{% if message=="Head of the story can't be empty" %}{{ Locale.get("HEAD_EMPTY") }}{% endif %}</h3>
-    <h3>{% if message=="Bad color" %}{{ Locale.get("BAD_COLOR") }}{% endif %}</h3>
+    <h3>{% if message=="Passwords are different" %}{{ Locale.get("DIFFERENT") }}{% endif %}</h3>
+    <h3>{% if message=="Login must be at least 5 symbols" %}{{ Locale.get("LOGIN_5") }}{% endif %}</h3>
+    <h3>{% if message=="Login should starts with a letter" %}{{ Locale.get("LOGIN_FL") }}{% endif %}</h3>
+    <h3>{% if message=="User with this login already exists" %}{{ Locale.get("LOGIN_EXISTS") }}{% endif %}</h3>
+    <h3>{% if message=="Password should be at least 8 symbols" %}{{ Locale.get("BAD_PASS") }}{% endif %}</h3>
+    <h3>{% if message=="Password should consists of at least: 1 upper case letter, 1 lower case and one number" %}{{ Locale.get("BAD_PASS2") }}{% endif %}</h3>
 </div>

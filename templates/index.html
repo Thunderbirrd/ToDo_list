@@ -14,14 +14,14 @@
         <div class="card bg-light">
             <div class="card-body">
 
-                <h2 class="card-title">To-Do List:</h2>
+                <h2 class="card-title">{{Locale.get("TO_DO")}}:</h2>
 
                 <form method="POST" action="/check">
                     {% for task in tasks %}
-                        <div><input id="checkbox-{{ task.id }}" type="checkbox" name="task-{{ task.id }}" {{ "checked" if task.status }}> <label for="checkbox-{{ task.id }}">{{ task.name }}</label>: <label for="checkbox-{{ task.id }}">{{ task.text }}</label>. <br>  Дата добавления: <label for="checkbox-{{ task.id }}">{{ task.added_date }}</label></div>
+                        <div><input id="checkbox-{{ task.id }}" type="checkbox" name="task-{{ task.id }}" {{ "checked" if task.status }}> <label for="checkbox-{{ task.id }}">{{ task.name }}</label>: <label for="checkbox-{{ task.id }}">{{ task.text }}</label>. <br>  {{Locale.get("ADD_DATE")}}: <label for="checkbox-{{ task.id }}">{{ task.added_date }}</label></div>
                     {% endfor %}
                     <br>
-                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                    <button type="submit" class="btn btn-sm btn-primary">{{Locale.get("SAVE")}}</button>
                 </form>
 
                 <hr>
@@ -29,10 +29,10 @@
                 <div>
                     <form method="POST" action="/add-task">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="name" placeholder="Task name">
-                            <input type="text" class="form-control" name="text" placeholder="Task description">
+                            <input type="text" class="form-control" name="name" placeholder="{{Locale.get("TASK_NAME")}}">
+                            <input type="text" class="form-control" name="text" placeholder="{{Locale.get("TASK_DESC")}}">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-success" type="submit">Add a new task</button>
+                                <button class="btn btn-outline-success" type="submit">{{Locale.get("ADD")}}</button>
                             </div>
                         </div>
                     </form>
@@ -43,9 +43,9 @@
                 <div>
                     <form method="POST" action="/delete_task">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="task_to_delete" placeholder="Task name">
+                            <input type="text" class="form-control" name="task_to_delete" placeholder="{{Locale.get("TASK_NAME")}}">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-success" type="submit">Delete this task</button>
+                                <button class="btn btn-outline-success" type="submit">{{Locale.get("DELETE")}}</button>
                             </div>
                         </div>
                     </form>

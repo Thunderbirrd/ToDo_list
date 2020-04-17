@@ -51,7 +51,7 @@ class User(db.Model, Model):
     @staticmethod
     def check_login(login):
         login = str(login)
-        if not User.get_all_login():
+        if User.check_login_is_unique(login) is None:
             if len(login) < 5:
                 return "Login must be at least 5 symbols"
             elif not login[0].isalpha():
@@ -59,14 +59,7 @@ class User(db.Model, Model):
             else:
                 return 1
         else:
-            if login in User.get_all_login():
-                return "User with this login already exists"
-            elif len(login) < 5:
-                return "Login must be at least 5 symbols"
-            elif not login[0].isalpha():
-                return "Login should starts with a letter"
-            else:
-                return 1
+            return "User with this login already exists"
 
     @staticmethod
     def check_pass(password):
@@ -95,11 +88,8 @@ class User(db.Model, Model):
         return user.login
 
     @staticmethod
-    def get_all_login():
-        user_list = list(db.session.query(User))
-        login_list = []
-        for user in user_list:
-            login_list.append(user.id)
+    def check_login_is_unique(login):
+        return db.session.query(User.login).filter(User.login == login).first()
 
     @staticmethod
     def auth(login, password):

@@ -1,5 +1,4 @@
 from app import app
-from database import db
 from flask import render_template, redirect, url_for, request, flash, session
 import json
 import datetime
@@ -19,26 +18,23 @@ def register():
     if request.form:
         login = request.form.get("login")
         password = request.form.get("password")
-
-        if User.check_login(login) == 1 and User.check_pass(password) == 1:
-            user = User.auth(login, password)
-
-            if user:
-                return json.dumps({'resultCode': 1})
-
+        password_confirm = request.form.get("password-confirm")
+        if password != password_confirm:
+            flash("Passwords are different")
+        elif login == "":
+            flash("Login must be set")
+        elif password == "":
+            flash("Password must be set")
+        elif User.check_login(login) == 1 and User.check_pass(password) == 1:
             user = User(login, password)
             user.save()
+            flash("Register successful")
+            return redirect(url_for("login"))
 
-            return json.dumps(
-                {
-                    'resultCode': 0,
-                    'data': {
-                        'login': login,
-                        'password': password,
-                        'user_id': user.id
-                    }
-                }
-            )
+        elif User.check_login(login) != 1:
+            flash(User.check_login(login))
+        elif User.check_pass(password) != 1:
+            flash(User.check_pass(password))
 
     return render_template('register.html')
 
@@ -116,13 +112,15 @@ def period():
     user = User.get_current_user()
     s1 = request.form.get("start_date")
     s2 = request.form.get("finish_date")
-    date1 = datetime.date(int(s1[:4]), int(s1[5:7]), int(s1[-2:]))
-    date2 = datetime.date(int(s2[:4]), int(s2[5:7]), int(s2[-2:]))
-    if date1 <= date2:
-        tasks = Task.get_all_users_task_in_period(user.id, date1, date2)
-        return render_template('archive.html', tasks=tasks)
-    else:
-        return redirect(url_for('archive'))
+    if str(s1) != "" and str(s2) != "":
+        date1 = datetime.date(int(s1[:4]), int(s1[5:7]), int(s1[-2:]))
+        date2 = datetime.date(int(s2[:4]), int(s2[5:7]), int(s2[-2:]))
+        if date1 <= date2:
+            tasks = Task.get_all_users_task_in_period(user.id, date1, date2)
+            return render_template('archive.html', tasks=tasks)
+        else:
+            return redirect(url_for('archive'))
+    return redirect(url_for('archive'))
 
 
 @app.route('/archive')
