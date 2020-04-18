@@ -3,8 +3,6 @@ from database import db
 import routes
 from models import User, Task, Locale
 
-db.create_all()
-
 
 @app.context_processor
 def include_permission_class():
@@ -12,4 +10,5 @@ def include_permission_class():
 
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(host='0.0.0.0')
