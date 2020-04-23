@@ -74,6 +74,10 @@ class User(db.Model, Model):
             return 1
 
     @staticmethod
+    def get_user_by_login(login):
+        return db.session.query(User).filter(User.login == login).first()
+
+    @staticmethod
     def get_current_user():
         id = session.get("auth")
         return db.session.query(User).filter(User.id == id).first()

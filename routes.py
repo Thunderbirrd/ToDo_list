@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for, request, flash, session
 import json
 import datetime
 import re
+from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, Task
 
 
@@ -26,7 +27,7 @@ def register():
         elif password == "":
             flash("Password must be set")
         elif User.check_login(login) == 1 and User.check_pass(password) == 1:
-            user = User(login, password)
+            user = User(login, generate_password_hash(password))
             user.save()
             flash("Register successful")
             return redirect(url_for("login"))
@@ -47,9 +48,9 @@ def login():
     if request.form:
         login = request.form.get("login")
         password = request.form.get("password")
-        user = User.auth(login, password)
+        user = User.get_user_by_login(login)
 
-        if user:
+        if user and check_password_hash(user.password, password):
             session["auth"] = user.id
             return redirect(url_for("index"))
         else:
